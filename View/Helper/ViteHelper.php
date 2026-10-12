@@ -124,10 +124,12 @@ class ViteHelper extends AppHelper
 
     /**
      * Build the URL of a source file on the dev server.
+     *
+     * The dev server also serves under Vite's `base`, so the build directory is prepended.
      */
     protected function devUrl(string $path): string
     {
-        return $this->devServerUrl . '/' . ltrim($path, '/');
+        return $this->devServerUrl . '/' . $this->buildDir . ltrim($path, '/');
     }
 
     /**

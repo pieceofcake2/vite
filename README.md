@@ -90,7 +90,7 @@ echo $this->Vite->image('assets/images/logo.png', ['alt' => 'Logo']);
 
 ## Dev Server
 
-When `Vite.devServerUrl` is set (e.g. `http://localhost:5173`), `entryScriptTags()` outputs the Vite client and the entry source from the dev server, and `entryLinkTags()` outputs nothing for script entries since Vite injects the styles. Configure the dev server to allow requests from the CakePHP origin:
+When `Vite.devServerUrl` is set (e.g. `http://localhost:5173`), `entryScriptTags()` outputs the Vite client and the entry source from the dev server (under `Vite.buildDir`, as the dev server also serves under Vite's `base`), and `entryLinkTags()` outputs nothing for script entries since Vite injects the styles. Configure the dev server to allow requests from the CakePHP origin:
 
 ```js
 server: {
