@@ -1,0 +1,24 @@
+{
+    "name": "pieceofcake2/vite",
+    "description": "Vite integration for CakePHP 2",
+    "type": "cakephp-plugin",
+    "keywords": ["cakephp", "cakephp2", "vite"],
+    "license": "MIT",
+    "require": {
+        "php": "^8.0",
+        "composer/installers": "*",
+        "pieceofcake2/cakephp": "^2.10"
+    },
+    "require-dev": {
+        "pieceofcake2/app": "^2.1"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    },
+    "extra": {
+        "installer-name": "Vite"
+    }
+}
