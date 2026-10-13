@@ -1,7 +1,5 @@
 <?php
 
-App::uses('AppHelper', 'View/Helper');
-
 /**
  * Vite integration helper for CakePHP 2.
  *
@@ -83,7 +81,7 @@ class ViteHelper extends AppHelper
             throw new RuntimeException("Vite manifest file not found: {$this->manifestPath}");
         }
         $data = json_decode(file_get_contents($this->manifestPath), true);
-        if (JSON_ERROR_NONE !== json_last_error() || !is_array($data)) {
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
             throw new RuntimeException('Invalid Vite manifest.json format');
         }
 
