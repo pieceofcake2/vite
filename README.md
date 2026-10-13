@@ -4,6 +4,8 @@
 [![Packagist Version](https://img.shields.io/packagist/v/pieceofcake2/vite?label=Packagist)](https://packagist.org/packages/pieceofcake2/vite)
 ![PHP](https://img.shields.io/packagist/dependency-v/pieceofcake2/vite/php?logo=php&logoColor=%23FFFFFF&label=PHP&labelColor=%23777BB4&color=%23FFFFFF)
 ![CakePHP](https://img.shields.io/packagist/dependency-v/pieceofcake2/vite/pieceofcake2/cakephp?logo=cakephp&logoColor=%23FFFFFF&label=CakePHP&labelColor=%23D33C43&color=%23FFFFFF)
+[![CI](https://img.shields.io/github/actions/workflow/status/pieceofcake2/vite/CI.yml?label=CI)](https://github.com/pieceofcake2/vite/actions/workflows/CI.yml)
+[![Codecov](https://img.shields.io/codecov/c/gh/pieceofcake2/vite?label=Coverage)](https://codecov.io/gh/pieceofcake2/vite)
 
 This helper integrates [Vite](https://vite.dev/)-built assets into a CakePHP 2 application. It reads Vite's `manifest.json` to output `<link>` and `<script type="module">` tags with hashed filenames, and can load assets from the Vite dev server during development.
 

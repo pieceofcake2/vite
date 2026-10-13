@@ -1,0 +1,27 @@
+{
+    "assets/app.ts": {
+        "file": "assets/app-abc123.js",
+        "src": "assets/app.ts",
+        "isEntry": true,
+        "imports": ["_shared-def456.js"],
+        "css": ["assets/app-ghi789.css"]
+    },
+    "_shared-def456.js": {
+        "file": "assets/shared-def456.js",
+        "imports": ["_vendor-jkl012.js"],
+        "css": ["assets/shared-mno345.css"]
+    },
+    "_vendor-jkl012.js": {
+        "file": "assets/vendor-jkl012.js",
+        "css": ["assets/app-ghi789.css"]
+    },
+    "assets/style.scss": {
+        "file": "assets/style-pqr678.css",
+        "src": "assets/style.scss",
+        "isEntry": true
+    },
+    "assets/images/logo.png": {
+        "file": "assets/logo-stu901.png",
+        "src": "assets/images/logo.png"
+    }
+}
