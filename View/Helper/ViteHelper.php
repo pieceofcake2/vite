@@ -6,7 +6,8 @@ App::uses('AppHelper', 'View/Helper');
  * Vite integration helper for CakePHP 2.
  *
  * Reads Vite's `manifest.json` to output tags for built assets, or points
- * to the Vite dev server when `Vite.devServerUrl` is configured.
+ * to the Vite dev server while it is running (detected by the hot file),
+ * or when `Vite.devServerUrl` is configured.
  *
  * @property HtmlHelper $Html
  */
@@ -50,6 +51,13 @@ class ViteHelper extends AppHelper
             ?: WWW_ROOT . 'build/manifest.json';
         $this->buildDir = trim(Configure::read('Vite.buildDir') ?: 'build', '/') . '/';
         $this->devServerUrl = rtrim((string)Configure::read('Vite.devServerUrl'), '/');
+        if ($this->devServerUrl === '') {
+            // The Vite config writes the dev server URL to the hot file while the dev server is running
+            $hotFile = Configure::read('Vite.hotFile') ?: WWW_ROOT . 'hot';
+            if (is_file($hotFile)) {
+                $this->devServerUrl = rtrim(trim((string)file_get_contents($hotFile)), '/');
+            }
+        }
     }
 
     /**

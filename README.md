@@ -53,8 +53,10 @@ All settings are optional.
 Configure::write('Vite.manifestPath', WWW_ROOT . 'build/manifest.json');
 // Directory of built files relative to webroot, matching Vite's `base` (default: 'build')
 Configure::write('Vite.buildDir', 'build');
-// Vite dev server URL. When set, assets are loaded from the dev server instead of manifest.json
-Configure::write('Vite.devServerUrl', env('VITE_DEV_SERVER_URL'));
+// Full filesystem path to the hot file written while the dev server is running (default: WWW_ROOT . 'hot')
+Configure::write('Vite.hotFile', WWW_ROOT . 'hot');
+// Vite dev server URL. Forces the dev server regardless of the hot file
+Configure::write('Vite.devServerUrl', 'http://localhost:5173');
 ```
 
 ## Helper Methods
@@ -90,14 +92,43 @@ echo $this->Vite->image('assets/images/logo.png', ['alt' => 'Logo']);
 
 ## Dev Server
 
-When `Vite.devServerUrl` is set (e.g. `http://localhost:5173`), `entryScriptTags()` outputs the Vite client and the entry source from the dev server (under `Vite.buildDir`, as the dev server also serves under Vite's `base`), and `entryLinkTags()` outputs nothing for script entries since Vite injects the styles. Configure the dev server to allow requests from the CakePHP origin:
+While the hot file (`webroot/hot` by default) exists, the helper loads assets from the dev server URL written in it: `entryScriptTags()` outputs the Vite client and the entry source (under `Vite.buildDir`, as the dev server also serves under Vite's `base`), and `entryLinkTags()` outputs nothing for script entries since Vite injects the styles. Without the hot file, built assets are loaded via `manifest.json`, so no configuration is needed to switch between them.
+
+Write the hot file from your Vite config while the dev server is running, and allow requests from the CakePHP origin:
 
 ```js
-server: {
-    cors: true,
-    origin: 'http://localhost:5173',
-},
+// vite.config.js
+import { rmSync, writeFileSync } from 'node:fs';
+import { defineConfig } from 'vite';
+
+const devServerUrl = 'http://localhost:5173';
+
+const hotFile = (path, url) => ({
+    name: 'hot-file',
+    apply: 'serve',
+    configureServer(server) {
+        const clean = () => rmSync(path, { force: true });
+        server.httpServer?.once('listening', () => writeFileSync(path, url));
+        process.once('exit', clean);
+        for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+            process.once(signal, () => process.exit());
+        }
+    },
+});
+
+export default defineConfig({
+    // ...
+    plugins: [hotFile('webroot/hot', devServerUrl)],
+    server: {
+        port: 5173,
+        strictPort: true,
+        cors: true,
+        origin: devServerUrl,
+    },
+});
 ```
+
+Add the hot file to `.gitignore` so it is never committed or deployed.
 
 ## License
 
