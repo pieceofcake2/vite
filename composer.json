@@ -1,6 +1,6 @@
 {
     "name": "pieceofcake2/vite",
-    "description": "Vite integration for CakePHP 2",
+    "description": "View helper that loads Vite-built assets in CakePHP 2, with dev server support",
     "type": "cakephp-plugin",
     "keywords": ["cakephp", "cakephp2", "vite"],
     "license": "MIT",
