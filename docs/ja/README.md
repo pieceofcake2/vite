@@ -14,7 +14,7 @@ pieceofcake2/vite は、[Vite](https://vite.dev/) でビルドしたアセット
 
 ## インストール
 
-1. [Composer](https://getcomposer.org/) で**プラグインをインストール**します:
+1. [Composer](https://getcomposer.org/) で**プラグインをインストール**します。
 
    ```bash
    composer require pieceofcake2/vite
@@ -22,22 +22,22 @@ pieceofcake2/vite は、[Vite](https://vite.dev/) でビルドしたアセット
 
    このプラグインは `cakephp-plugin` タイプなので、`composer/installers` によってプラグインディレクトリに
    インストールされます。正しい場所にインストールされるように、アプリケーションの `composer.json` で
-   `installer-paths` を設定してください:
+   `installer-paths` を設定してください。
 
    | レイアウト | `installer-paths` |
    | --- | --- |
    | モダン (`config/`, `src/`, `templates/`, `plugins/`) | `"plugins/{$name}/": ["type:cakephp-plugin"]` |
    | レガシー (`app/Config/`, `app/Plugin/`) | `"app/Plugin/{$name}/": ["type:cakephp-plugin"]` |
 
-   `config/bootstrap.php` (レガシーレイアウトでは `app/Config/bootstrap.php`) でプラグインをロードします。
-   すでに `CakePlugin::loadAll()` を使っている場合は不要です:
+   `config/bootstrap.php` (レガシーレイアウトでは `app/Config/bootstrap.php`) でプラグインを読み込みます。
+   すでに `CakePlugin::loadAll()` を使っている場合は不要です。
 
    ```php
    CakePlugin::load('Vite');
    ```
 
 2. webroot の `build/` ディレクトリ (`webroot/build/`、レガシーレイアウトでは `app/webroot/build/`) に
-   マニフェストを書き出すように **Vite を設定**します:
+   マニフェストを書き出すように **Vite を設定**します。
 
    ```js
    // vite.config.js
@@ -60,7 +60,7 @@ pieceofcake2/vite は、[Vite](https://vite.dev/) でビルドしたアセット
    `vite build` を実行すると、`webroot/build/manifest.json` と、`webroot/build/assets/` 以下に
    ビルドされたファイルが生成されます。
 
-3. コントローラー (例えば `AppController`) で**ヘルパーをロード**します:
+3. コントローラー (たとえば `AppController`) で**ヘルパーを読み込み**ます。
 
    ```php
    class AppController extends Controller
@@ -76,7 +76,7 @@ pieceofcake2/vite は、[Vite](https://vite.dev/) でビルドしたアセット
 ## 設定
 
 設定はすべて省略可能です。`config/bootstrap.php` (レガシーレイアウトでは `app/Config/bootstrap.php`)
-に記述します:
+に記述します。
 
 ```php
 // manifest.json のファイルシステム上のフルパス (デフォルト: WWW_ROOT . 'build/manifest.json')
@@ -93,7 +93,7 @@ Configure::write('Vite.devServerUrl', 'http://localhost:5173');
 
 ## ヘルパーのメソッド
 
-エントリーは、`manifest.json` のキーに使われているソースのパス (例えば `assets/app.ts`) で指定します。
+エントリーは、`manifest.json` のキーに使われているソースのパス (たとえば `assets/app.ts`) で指定します。
 
 <a id="entrylinktagsentry-array-options--"></a>
 
@@ -113,8 +113,8 @@ Configure::write('Vite.devServerUrl', 'http://localhost:5173');
 ビューブロック (それぞれ `css` と `script`) に追加します。ブロックを選ぶには `['block' => 'name']` を、
 タグを文字列として受け取るには `['inline' => true]` を渡してください。
 
-レイアウト、例えば `templates/Layouts/default.ctp` (レガシーレイアウトでは
-`app/View/Layouts/default.ctp`) では次のようにします:
+レイアウト、たとえば `templates/Layouts/default.ctp` (レガシーレイアウトでは
+`app/View/Layouts/default.ctp`) では次のようにします。
 
 ```php
 <head>
@@ -130,7 +130,7 @@ Configure::write('Vite.devServerUrl', 'http://localhost:5173');
 ### `asset($path)` / `image($path, array $htmlAttributes = [])`
 
 ソースのアセットのパスを `manifest.json` を使ってビルド後の URL に解決するか、そのアセットの `<img>`
-タグを出力します。アセットはマニフェストに含まれている (例えばビルドの入力に指定されている) 必要があります。
+タグを出力します。アセットはマニフェストに含まれている (たとえばビルドの入力に指定されている) 必要があります。
 
 ```php
 echo $this->Vite->image('assets/images/logo.png', ['alt' => 'Logo']);
@@ -154,7 +154,7 @@ hot ファイル (デフォルトでは `webroot/hot`、レガシーレイアウ
 `manifest.json` を使って読み込みます。そのため、両者を切り替えるための設定は必要ありません。
 
 開発サーバーの実行中に Vite の設定から hot ファイルを書き出し、CakePHP のオリジンからのリクエストを
-許可してください:
+許可してください。
 
 ```js
 // vite.config.js
