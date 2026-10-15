@@ -174,3 +174,8 @@ export default defineConfig({
 ```
 
 Add the hot file to `.gitignore` so it is never committed or deployed.
+
+## Origin
+
+This package was created by [pieceofcake2](https://github.com/pieceofcake2), which also maintains
+it. It is not a fork of another project and is not based on one.
