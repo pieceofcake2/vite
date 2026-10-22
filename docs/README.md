@@ -116,6 +116,20 @@ In your layout, e.g. `templates/Layouts/default.ctp` (legacy layout:
 </head>
 ```
 
+#### The nonce of the Content Security Policy
+
+With a Content Security Policy that allows the scripts by their nonce, e.g. with `'strict-dynamic'`,
+`entryScriptTags()` gives the nonce to the `<script>` and `<link rel="modulepreload">` tags. When the view has
+loaded the `SecurityHeaders` helper of
+[pieceofcake2/security-headers](https://github.com/pieceofcake2/security-headers), it uses the nonce of the
+helper. Otherwise pass it with the `nonce` option; `'nonce' => false` leaves it out:
+
+```php
+<?php $this->Vite->entryScriptTags('assets/app.ts', ['nonce' => $nonce]); ?>
+```
+
+The `<link rel="stylesheet">` tags of `entryLinkTags()` have no nonce.
+
 ### `asset($path)` / `image($path, array $htmlAttributes = [])`
 
 Resolves a source asset path to its built URL via `manifest.json`, or renders an `<img>` tag

@@ -173,17 +173,42 @@ class ViteHelper extends AppHelper
     /**
      * Render a <link> tag.
      */
-    protected function linkTag(string $rel, string $url): string
+    protected function linkTag(string $rel, string $url, string $nonce = ''): string
     {
-        return sprintf('<link rel="%s" href="%s"/>', $rel, h($url));
+        return sprintf('<link rel="%s" href="%s"%s/>', $rel, h($url), $this->nonceAttribute($nonce));
     }
 
     /**
      * Render a module <script> tag.
      */
-    protected function moduleScriptTag(string $url): string
+    protected function moduleScriptTag(string $url, string $nonce = ''): string
     {
-        return sprintf('<script type="module" src="%s"></script>', h($url));
+        return sprintf('<script type="module" src="%s"%s></script>', h($url), $this->nonceAttribute($nonce));
+    }
+
+    /**
+     * The nonce of the Content Security Policy for the scripts: the `nonce` option, or by default the nonce of the
+     * `SecurityHeaders` helper of pieceofcake2/security-headers when the view has loaded it. `false` for none.
+     *
+     * @param array $options Options of `entryScriptTags()`
+     */
+    protected function nonce(array $options): string
+    {
+        $nonce = $options['nonce'] ?? null;
+        if ($nonce === null && $this->_View->Helpers->loaded('SecurityHeaders')) {
+            $helper = $this->_View->Helpers->__get('SecurityHeaders');
+            $nonce = method_exists($helper, 'nonce') ? $helper->nonce() : null;
+        }
+
+        return is_string($nonce) ? $nonce : '';
+    }
+
+    /**
+     * The `nonce` attribute of a tag, or an empty string without the nonce.
+     */
+    protected function nonceAttribute(string $nonce): string
+    {
+        return $nonce === '' ? '' : sprintf(' nonce="%s"', h($nonce));
     }
 
     /**
@@ -229,19 +254,21 @@ class ViteHelper extends AppHelper
      * In dev server mode, the Vite client and the entry source are loaded from the dev server.
      *
      * @param string $entry Entry source path as in manifest.json (e.g. 'assets/app.ts')
-     * @param array $options `block` / `inline` options
+     * @param array $options `block` / `inline` options, and `nonce`: the nonce of the Content Security Policy, by
+     *   default that of the `SecurityHeaders` helper when it is loaded, or `false` for none
      * @return string|null Tags when output inline, otherwise null
      */
     public function entryScriptTags(string $entry, array $options = []): ?string
     {
         $tags = [];
+        $nonce = $this->nonce($options);
         if ($this->isDevServer()) {
             if (!$this->clientIncluded) {
-                $tags[] = $this->moduleScriptTag($this->devUrl('@vite/client'));
+                $tags[] = $this->moduleScriptTag($this->devUrl('@vite/client'), $nonce);
                 $this->clientIncluded = true;
             }
             if (!$this->isCss($entry)) {
-                $tags[] = $this->moduleScriptTag($this->devUrl($entry));
+                $tags[] = $this->moduleScriptTag($this->devUrl($entry), $nonce);
             }
 
             return $this->renderTags($tags, $options, 'script');
@@ -249,9 +276,9 @@ class ViteHelper extends AppHelper
 
         $file = $this->chunk($entry)['file'];
         if (!$this->isCss($file)) {
-            $tags[] = $this->moduleScriptTag($this->buildUrl($file));
+            $tags[] = $this->moduleScriptTag($this->buildUrl($file), $nonce);
             foreach ($this->importedChunks($entry) as $name) {
-                $tags[] = $this->linkTag('modulepreload', $this->buildUrl($this->chunk($name)['file']));
+                $tags[] = $this->linkTag('modulepreload', $this->buildUrl($this->chunk($name)['file']), $nonce);
             }
         }
 
