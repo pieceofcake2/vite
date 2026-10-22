@@ -59,6 +59,43 @@ class ViteHelperTest extends CakeTestCase
         $this->assertSame($expected, $this->helper()->entryScriptTags('assets/app.ts', ['inline' => true]));
     }
 
+    public function testEntryScriptTagsWithNonce(): void
+    {
+        $expected = implode("\n\t", [
+            '<script type="module" src="/build/assets/app-abc123.js" nonce="a&quot;b"></script>',
+            '<link rel="modulepreload" href="/build/assets/shared-def456.js" nonce="a&quot;b"/>',
+            '<link rel="modulepreload" href="/build/assets/vendor-jkl012.js" nonce="a&quot;b"/>',
+        ]);
+
+        $this->assertSame($expected, $this->helper()->entryScriptTags('assets/app.ts', ['inline' => true, 'nonce' => 'a"b']));
+    }
+
+    public function testEntryScriptTagsWithNonceOfSecurityHeadersHelper(): void
+    {
+        $this->View->Helpers->set('SecurityHeaders', new class ($this->View) extends AppHelper {
+            public function nonce(): string
+            {
+                return 'abc';
+            }
+        });
+
+        $tags = $this->helper()->entryScriptTags('assets/app.ts', ['inline' => true]);
+        $this->assertStringContainsString('<script type="module" src="/build/assets/app-abc123.js" nonce="abc"></script>', $tags);
+        $this->assertStringContainsString('<link rel="modulepreload" href="/build/assets/shared-def456.js" nonce="abc"/>', $tags);
+        $this->assertStringNotContainsString('nonce', $this->helper()->entryScriptTags('assets/app.ts', ['inline' => true, 'nonce' => false]));
+        $this->assertStringNotContainsString('nonce', $this->helper()->entryLinkTags('assets/app.ts', ['inline' => true]));
+    }
+
+    public function testDevServerScriptTagsWithNonce(): void
+    {
+        $this->startDevServer('http://localhost:5173');
+
+        $this->assertSame(implode("\n\t", [
+            '<script type="module" src="http://localhost:5173/build/@vite/client" nonce="abc"></script>',
+            '<script type="module" src="http://localhost:5173/build/assets/app.ts" nonce="abc"></script>',
+        ]), $this->helper()->entryScriptTags('assets/app.ts', ['inline' => true, 'nonce' => 'abc']));
+    }
+
     public function testEntryScriptTagsForStylesheetEntryIsEmpty(): void
     {
         $this->assertSame('', $this->helper()->entryScriptTags('assets/style.scss', ['inline' => true]));

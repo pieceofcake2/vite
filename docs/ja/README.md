@@ -125,6 +125,20 @@ Configure::write('Vite.devServerUrl', 'http://localhost:5173');
 </head>
 ```
 
+#### Content Security Policy の nonce
+
+nonce でスクリプトを許可する Content Security Policy (`'strict-dynamic'` など) では、`entryScriptTags()` は
+`<script>` と `<link rel="modulepreload">` のタグに nonce を付けます。ビューが
+[pieceofcake2/security-headers](https://github.com/pieceofcake2/security-headers) の `SecurityHeaders`
+ヘルパーを読み込んでいれば、そのヘルパーの nonce を使います。そうでなければ `nonce` オプションで渡します。
+`'nonce' => false` で付けません。
+
+```php
+<?php $this->Vite->entryScriptTags('assets/app.ts', ['nonce' => $nonce]); ?>
+```
+
+`entryLinkTags()` の `<link rel="stylesheet">` タグには nonce を付けません。
+
 <a id="assetpath--imagepath-array-htmlattributes--"></a>
 
 ### `asset($path)` / `image($path, array $htmlAttributes = [])`
